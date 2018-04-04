@@ -1,3 +1,5 @@
+'use strict'
+
 const fs = require('mz/fs')
 const jwt = require('jsonwebtoken')
 
