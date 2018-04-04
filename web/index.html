@@ -1,0 +1,270 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Web Authentication</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+        <section>
+         <h1>Web Authentication</h1>
+
+         <p>Aaron Coburn</p>
+         <small>aaron.coburn@gmail.com</small>
+        </section>
+
+
+        <section>
+          <h2>Who am I</h2>
+          <p>Programmer -- mostly JVM, also python and JS</p>
+          <p>Distributed, streaming applications</p>
+        </section>
+
+
+        <section>
+          <h2>Authentication</h2>
+          <p>Identity: Who are you?</p>
+          <p>Trust: How can I be sure?</p>
+        </section>
+
+
+        <section>
+          <h2>Terminology</h2>
+
+          <ul>
+            <li>Authentication and authorization</li>
+            <li>Encoding and encryption</li>
+            <li>AuthN and Session mgmt</li>
+          </ul>
+        </section>
+
+
+        <section>
+          <section>
+            <p>Direct Authentication</p>
+            <p>&nbsp;</p>
+
+            <h2>Forms</h2>
+            <p>Perfect for web browsers</p>
+            <p>It's easy and you're storing passwords</p>
+          </section>
+
+          <section>
+            <p>Direct Authentication</p>
+            <p>&nbsp;</p>
+
+            <h2>JSON</h2>
+            <p>Much better for APIs</p>
+            <p>Works nicely with browser-based javascript</p>
+            <p>Storing passwords</p>
+          </section>
+
+          <section>
+            <p>Direct Authentication</p>
+            <p>&nbsp;</p>
+
+            <h2>Basic Auth</h2>
+            <p>OK for APIs</p>
+            <p>It's ugly for a browser</p>
+            <p>Storing passwords</p>
+          </section>
+
+          <section>
+            <p>Direct Authentication</p>
+            <p>&nbsp;</p>
+
+            <h2>Tokens</h2>
+            <p>Great for APIs</p>
+            <p>Presupposes an existing user account in the app</p>
+          </section>
+
+          <section>
+            <p>Direct Authentication</p>
+            <p>&nbsp;</p>
+
+            <h2>Other options...</h2>
+            <ul>
+              <li>Multi-factor</li>
+              <li>Hardware keys</li>
+              <li>Biometrics</li>
+              <li>Client Certificates</li>
+              <li>...</li>
+            </ul>
+          </section>
+        </section>
+
+        <section>
+          <h2>Passwords...</h2>
+        </section>
+
+        <section>
+          <section>
+            <h2>Architecture</h2>
+            <p>App server &lt; ~ &gt; AuthN server</p>
+            <p>App domain &lt; ~ &gt; AuthN domain</p>
+            <ul>
+              <li>n App servers</li>
+              <li>m AuthN servers</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Architecture</h2>
+            <ul>
+              <li>Back channel (e.g. OAuth, LDAP)</li>
+              <li>Direct communication (e.g. SAML, JWT)</li>
+            </ul>
+          </section>
+        </section>
+
+        <section>
+          <h2>Federated identity / Single&#8209;Sign&#8209;On</h2>
+
+          <ul>
+            <li>Cookies in a single security domain</li>
+            <ul>
+              <li>HTTP Strict Transport Security</li>
+              <li>Set the secure flag</li>
+            </ul>
+            <li>Cross-domain support: SAML, JWT</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>SAML</h2>
+          <ul>
+            <li>
+              <a href="https://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf">Open standard 2005</a>
+            </li>
+            <li>AuthN and AuthZ <i>assertions</i></li>
+            <li>Robust; "enterprise"</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>JWT</h2>
+          <ul>
+            <li><a href="https://tools.ietf.org/html/rfc7519">Open standard 2015</a></li>
+            <li>AuthN <i>claims</i></li>
+            <li>Light-weight</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>JWT Structure</h2>
+          <pre><code style="text-align:center">abcabcabc.hijhijhijhij.xyzxyzxyzxyz</code></pre>
+
+          <p>header . payload . signature</p>
+          <p>Base64 <i>encoded</i> JSON objects</p>
+        </section>
+
+        <section>
+          <h2>Demo...</h2>
+        </section>
+
+        <section>
+          <h2>JWT Header</h2>
+          <pre><code>{
+    "typ": "JWT",
+    "alg": "HS256"
+}</code></pre>
+          <p>alg: HS256, RS256, ES256, ...</p>
+        </section>
+
+        <section>
+          <h2>JWT Payload</h2>
+          <pre><code>{
+    "sub": "acoburn",
+    "iss": "http://id.example.com/",
+    "aud": [
+      "http://app1.example.com/",
+      "http://app2.example.com/" ],
+    "exp": 1522884607,
+    "iat": 1522879207,
+    "foo": "bar"
+}</code></pre>
+
+          <p><a href="https://www.iana.org/assignments/jwt/jwt.xhtml">IANA Registry</a></p>
+        </section>
+
+        <section>
+          <h2>JWT Signature</h2>
+          <pre><code>HMACSHA256(
+    base64UrlEncode(header) + "." +
+    base64UrlEncode(payload),
+    secret)</code></pre>
+        </section>
+
+        <section>
+          <h2>Using a JWT</h2>
+          <pre><code>Authorization: Bearer &lt;token&gt;</code></pre>
+        </section>
+
+        <section>
+          <h2>There's more!</h2>
+          <ul>
+            <li>JOSE</li>
+            <li>JWS</li>
+            <li>JWE</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Exploits</h2>
+          <p>Sensitive data in payload</p>
+          <p>Replay attack</p>
+          <p>Brute force HS256 key</p>
+        </section>
+
+        <section>
+          <h2>More information</h2>
+          <p><a href="https://jwt.io/">https://jwt.io/</a></p>
+          <p><a href="https://tools.ietf.org/html/rfc7519">https://tools.ietf.org/html/rfc7519</a></p>
+          <p><a href="https://github.com/auth0/node-jsonwebtoken">node-jsonwebtoken</a></p>
+        </section>
+
+        <section>
+          <h2>Questions?</h2>
+
+          <p>Aaron Coburn</p>
+          <p>aaron.coburn@gmail.com</p>
+        </section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
